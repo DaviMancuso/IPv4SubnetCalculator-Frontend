@@ -145,6 +145,23 @@ async function calc() {
     setTimeout(() => {
       label.textContent = 'Copiar';
     }, 1500);
+
+
+// ======================================================
+// LIMPA OS CAMPOS E VOLTA A INTERFACE PARA O ESTADO INICIAL
+// ======================================================
+
+function reset() {
+  current = null;
+  clearError();
+
+  $('result').classList.add('hidden');
+  $('empty').classList.remove('hidden');
+
+  $('ip').value = '';
+  $('cidr').value = '';
+}
+
   }
 
 // ======================================================
