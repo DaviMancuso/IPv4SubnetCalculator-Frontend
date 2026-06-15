@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calculadora de Sub-redes IPv4</title>
+<link rel="shortcut icon" href="Favicon/network.png" type="image/x-icon">
+<meta name="description" content="Calculadora IPv4 moderna: rede, broadcast, hosts, máscara, wildcard e binário em segundos." />
+<meta property="og:title" content="Calculadora de Sub-redes IPv4" />
+<meta property="og:description" content="Calcule sub-redes IPv4 com uma interface limpa e profissional." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <div class="brand-mark"><!-- network icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>
+      </div>
+      <span class="brand-name">IPv4 Network Calculator</span>
+    </div>
+  </div>
+</header>
+
+<main id="calc" class="container main">
+  <div class="grid">
+    <!-- Tela 1 — Entrada -->
+    <section>
+      <div class="card card-pad">
+        <h1 class="h1">Calculadora de Sub-redes IPv4</h1>
+        <p class="subtitle">Informe um endereço IPv4 e o prefixo CIDR para obter todos os detalhes da sub-rede.</p>
+
+        <div class="form">
+          <label class="field">
+            <div class="field-head"><span class="field-label">Endereço IPv4</span><span class="field-hint"></span></div>
+            <input id="ip" type="text"  placeholder="192.168.0.1" />
+          </label>
+          <label class="field">
+            <div class="field-head"><span class="field-label">CIDR</span><span class="field-hint">0 – 32</span></div>
+            <input id="cidr" type="text"  placeholder="24" />
+          </label>
+
+          <div id="error" class="error hidden"></div>
+
+<button id="calcBtn" class="btn-primary">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       stroke-width="2" stroke-linecap="round"
+       stroke-linejoin="round" class="ic">
+    <rect x="4" y="2" width="16" height="20" rx="2"/>
+    <line x1="8" y1="6" x2="16" y2="6"/>
+    <line x1="16" y1="14" x2="16" y2="18"/>
+    <path d="M16 10h.01"/>
+    <path d="M12 10h.01"/>
+    <path d="M8 10h.01"/>
+    <path d="M12 14h.01"/>
+    <path d="M8 14h.01"/>
+    <path d="M12 18h.01"/>
+    <path d="M8 18h.01"/>
+  </svg>
+
+  <span id="calcBtnText">Calcular Sub-rede</span>
+</button>
+        </div>
+      </div>
+
+      <div id="sobre" class="chips">
+        <div class="chip"><div class="chip-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Preciso</span></div><p>Cálculo bitwise</p></div>
+        <div class="chip"><div class="chip-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Rápido</span></div><p>Resposta instantânea</p></div>
+        <div class="chip"><div class="chip-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg><span>Completo</span></div><p>Máscara, binário, classe</p></div>
+      </div>
+    </section>
+
+    <!-- Tela 2 — Resultados -->
+    <section>
+      <div id="empty" class="empty">
+        <div class="empty-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/></svg>
+        </div>
+        <h3>Pronto para calcular</h3>
+        <p>Preencha um IPv4 e um prefixo CIDR ao lado e clique em <strong>Calcular Sub-rede</strong> para ver os resultados aqui.</p>
+      </div>
+
+      <div id="result" class="hidden result-wrap">
+        <div class="result-head">
+          <div>
+            <p class="eyebrow">Resultado do cálculo</p>
+            <h2 class="h2"><span id="r-ip"></span><span class="muted">/<span id="r-cidr"></span></span></h2>
+          </div>
+          <div class="actions">
+            <button id="resetBtn" class="btn-ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 10 9 10"/></svg>Nova consulta</button>
+            <button id="copyBtn" class="btn-ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span id="copyLabel">Copiar</span></button>
+            <button id="csvBtn" class="btn-ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exportar CSV</button>
+          </div>
+        </div>
+
+        <div class="results-grid">
+          <div class="result-card"><div class="rc-head"><span class="rc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg></span><span class="rc-label">Endereço de Rede</span></div><p class="rc-val" id="r-network"></p></div>
+          <div class="result-card"><div class="rc-head"><span class="rc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.93 19.07a10 10 0 0 1 0-14.14"/><path d="M7.76 16.24a6 6 0 0 1 0-8.49"/><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></span><span class="rc-label">Broadcast</span></div><p class="rc-val" id="r-broadcast"></p></div>
+          <div class="result-card"><div class="rc-head"><span class="rc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="rc-label">Quantidade de Hosts</span></div><p class="rc-val" id="r-hosts"></p></div>
+          <div class="result-card"><div class="rc-head"><span class="rc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v14"/><polyline points="6 11 12 17 18 11"/><line x1="5" y1="21" x2="19" y2="21"/></svg></span><span class="rc-label">Primeiro Host</span></div><p class="rc-val" id="r-first"></p></div>
+          <div class="result-card"><div class="rc-head"><span class="rc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="3" x2="19" y2="3"/><path d="M12 21V7"/><polyline points="6 13 12 7 18 13"/></svg></span><span class="rc-label">Último Host</span></div><p class="rc-val" id="r-last"></p></div>
+          <div class="result-card"><div class="rc-head"><span class="rc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span><span class="rc-label">Tipo de Rede</span></div><p class="rc-val" id="r-class"></p></div>
+        </div>
+
+        <div class="card card-pad tech">
+          <h3 class="h3">Detalhes técnicos</h3>
+          <div class="tech-grid">
+            <div class="tech-row"><span>Máscara de sub-rede</span><span id="r-mask"></span></div>
+            <div class="tech-row"><span>Máscara wildcard</span><span id="r-wildcard"></span></div>
+            <div class="tech-row"><span>CIDR</span><span id="r-cidr2"></span></div>
+            <div class="tech-row"><span>Tipo de Rede</span><span id="r-class2"></span></div>
+            <div class="tech-row tech-row-full"><span>Binário (rede)</span><span class="mono" id="r-binary"></span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>© <span id="year"></span> | Desenvolvido por Davi Mancuso</p>
+    <div class="footer-links">
+      <a href="https://github.com/DaviMancuso?tab=repositories" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub</a>
+      <a href="https://app.notion.com/p/Documenta-o-calculadora-de-Sub-redes-IPv4-37c589d505b680f5b1b7e05c5fd43e56" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Documentação</a>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
