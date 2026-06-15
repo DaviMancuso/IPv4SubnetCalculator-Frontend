@@ -147,6 +147,8 @@ async function calc() {
     }, 1500);
 
 
+  }
+
 // ======================================================
 // LIMPA OS CAMPOS E VOLTA A INTERFACE PARA O ESTADO INICIAL
 // ======================================================
@@ -162,7 +164,6 @@ function reset() {
   $('cidr').value = '';
 }
 
-  }
 
 // ======================================================
 // EXPORTA OS RESULTADOS PARA CSV
