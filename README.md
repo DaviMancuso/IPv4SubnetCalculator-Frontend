@@ -86,17 +86,6 @@ Tecnologias utilizadas na API:
 
 ---
 
-## 📂 Estrutura do Projeto
-
-```text
-Frontend/
-│
-├── index.html
-├── styles.css
-├── script.js
-└── README.md
-```
-
 ## 👨‍💻 Autor
 
 Desenvolvido por Davi Mancuso como projeto de estudo para praticar integração entre Frontend e Backend utilizando Java, Spring Boot e conceitos de Redes de Computadores.
