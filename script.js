@@ -1,6 +1,6 @@
 (function () {
 
-  const APP_VERSION = 'v1.1.0';
+  const APP_VERSION = '1.1.0';
 
   'use strict';
 
@@ -59,7 +59,7 @@
     $('r-mask').textContent = data.mascara;
     $('r-wildcard').textContent = data.wildCard;
     $('r-binary').textContent = data.binarioRede;
-    $('r-cidr2').textContent = + cidrDigitado;
+    $('r-cidr2').textContent = '/' + cidrDigitado;
 
       // ROLA ATÉ A ÁREA DE RESULTADOS
     $('result').scrollIntoView({
@@ -80,16 +80,20 @@ async function calc() {
   const btn = $('calcBtn');
   const btnText = $('calcBtnText');
 
-  try {
-
     const ip = $('ip').value.trim();
     const cidr = $('cidr').value.trim();
 
-    // VALIDA CAMPOS VAZIOS  (PREVENÇÃO DE UM POSSIVEL ERRO PARA DIMINUIR CHAMADA DO BACK-END)
-    if (!ip || !cidr) {
-      showError('Informe o IP e o CIDR!');
-      return;
-    }
+  // VALIDA CAMPOS VAZIOS
+  if (!ip || !cidr) {
+    current = null;
+    $('result').classList.add('hidden');
+    $('empty').classList.remove('hidden');
+    showError('Informe o IP e o CIDR!');
+    return;
+  }
+
+    
+  try {
    
 
     // BLOQUEIA O BOTÃO DURANTE A REQUISIÇÃO
