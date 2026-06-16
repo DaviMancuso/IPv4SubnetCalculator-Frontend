@@ -86,11 +86,16 @@ Tecnologias utilizadas na API:
 
 ---
 
+
 ## 👨‍💻 Autor
 
 Desenvolvido por Davi Mancuso como projeto de estudo para praticar integração entre Frontend e Backend utilizando Java, Spring Boot e conceitos de Redes de Computadores.
 
 ---
+
+## Versão Atual
+
+v1.0.0
 
 ## 📄 Licença
 
