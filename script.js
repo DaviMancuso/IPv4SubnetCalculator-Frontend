@@ -1,4 +1,7 @@
 (function () {
+
+  const APP_VERSION = 'v1.1.0';
+
   'use strict';
 
   // URL DA API EM PRODUÇÃO
@@ -57,6 +60,13 @@
     $('r-wildcard').textContent = data.wildCard;
     $('r-binary').textContent = data.binarioRede;
     $('r-cidr2').textContent = + cidrDigitado;
+
+      // ROLA ATÉ A ÁREA DE RESULTADOS
+    $('result').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+
   }
 
 // ======================================================
@@ -72,13 +82,20 @@ async function calc() {
 
   try {
 
+    const ip = $('ip').value.trim();
+    const cidr = $('cidr').value.trim();
+
+    // VALIDA CAMPOS VAZIOS  (PREVENÇÃO DE UM POSSIVEL ERRO PARA DIMINUIR CHAMADA DO BACK-END)
+    if (!ip || !cidr) {
+      showError('Informe o IP e o CIDR!');
+      return;
+    }
+   
+
     // BLOQUEIA O BOTÃO DURANTE A REQUISIÇÃO
     // EVITA CLIQUES REPETIDOS DO USUÁRIO
     btn.disabled = true;
     btnText.textContent = 'Calculando...';
-
-    const ip = $('ip').value.trim();
-    const cidr = $('cidr').value.trim();
 
     const entrada = `${ip}/${cidr}`;
 
@@ -162,6 +179,12 @@ function reset() {
 
   $('ip').value = '';
   $('cidr').value = '';
+
+  // VOLTA PARA O TOPO DA PÁGINA
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 }
 
 
@@ -209,18 +232,40 @@ function reset() {
 // REGISTRA TODOS OS EVENTOS DA PÁGINA APÓS O CARREGAMENTO
 // ======================================================
 
-  document.addEventListener('DOMContentLoaded', () => {
-    $('year').textContent = new Date().getFullYear();
+document.addEventListener('DOMContentLoaded', () => {
+  $('year').textContent = new Date().getFullYear();
+  $('version').textContent = APP_VERSION;
 
-    $('calcBtn').addEventListener('click', calc);
-    $('resetBtn').addEventListener('click', reset);
-    $('copyBtn').addEventListener('click', copyAll);
-    $('csvBtn').addEventListener('click', exportCsv);
+  $('calcBtn').addEventListener('click', calc);
+  $('resetBtn').addEventListener('click', reset);
+  $('copyBtn').addEventListener('click', copyAll);
+  $('csvBtn').addEventListener('click', exportCsv);
 
-    ['ip', 'cidr'].forEach((id) => {
-      $(id).addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') calc();
-      });
+  // BLOQUEIA LETRAS E LIMITA O CAMPO IP A 15 CARACTERES
+  $('ip').addEventListener('input', () => {
+    let value = $('ip').value.replace(/[^0-9.]/g, '');
+    $('ip').value = value.slice(0, 15);
+  });
+
+  // BLOQUEIA LETRAS, LIMITA A 2 CARACTERES E IMPEDE CIDR MAIOR QUE 32
+  $('cidr').addEventListener('input', () => {
+    let value = $('cidr').value.replace(/[^0-9]/g, '');
+
+    // Limita para 2 caracteres
+    value = value.slice(0, 2);
+
+    // Impede valores maiores que 32
+    if (value !== '' && parseInt(value) > 32) {
+      value = '32';
+    }
+
+    $('cidr').value = value;
+  });
+
+  ['ip', 'cidr'].forEach((id) => {
+    $(id).addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') calc();
     });
   });
+});
 })();
