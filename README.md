@@ -29,8 +29,12 @@ A aplicação permite que o usuário informe um endereço IP e um prefixo CIDR p
 * Interface Responsiva
 * Integração com API REST
 * Tratamento de Erros
+* Validação de Campos Vazios
+* Bloqueio de Caracteres Inválidos
+* Limitação de CIDR (0–32)
 * Copiar Resultados
 * Exportação para CSV
+* Scroll Automático para Resultados
 * Atualização em Tempo Real
 
 ---
@@ -68,7 +72,7 @@ Tipo da Rede: Privada
 * Git
 * GitHub
 * Vercel
-
+* Railway
 ---
 
 ## 🔗 API
@@ -85,6 +89,25 @@ Tecnologias utilizadas na API:
 * Railway
 
 ---
+
+## 📋 Histórico de Versões
+
+### v1.1.0
+
+- Adicionado bloqueio de caracteres inválidos
+- Adicionado limite de CIDR até 32
+- Adicionada validação de campos vazios
+- Adicionado scroll automático para resultados
+- Adicionada exibição da versão da aplicação
+- Melhorias gerais de usabilidade
+
+### v1.0.0
+
+- Lançamento inicial da aplicação
+- Integração com API Spring Boot
+- Exportação CSV
+- Cópia de resultados
+- Interface responsiva
 
 
 ## 👨‍💻 Autor
