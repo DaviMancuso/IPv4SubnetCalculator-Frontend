@@ -1,6 +1,6 @@
 (function () {
 
-  const APP_VERSION = '1.1.0';
+  const APP_VERSION = '1.2';
 
   'use strict';
 
@@ -76,60 +76,58 @@
 
 async function calc() {
   clearError();
+  clearInputErrors();
 
   const btn = $('calcBtn');
   const btnText = $('calcBtnText');
 
-    const ip = $('ip').value.trim();
-    const cidr = $('cidr').value.trim();
+  const ip = $('ip').value.trim();
+  const cidr = $('cidr').value.trim();
 
   // VALIDA CAMPOS VAZIOS
   if (!ip || !cidr) {
     current = null;
+
     $('result').classList.add('hidden');
     $('empty').classList.remove('hidden');
+
+    if (!ip) markInputError('ip');
+    if (!cidr) markInputError('cidr');
+
     showError('Informe o IP e o CIDR!');
     return;
   }
 
-    
   try {
-   
-
-    // BLOQUEIA O BOTÃO DURANTE A REQUISIÇÃO
-    // EVITA CLIQUES REPETIDOS DO USUÁRIO
     btn.disabled = true;
     btnText.textContent = 'Calculando...';
 
     const entrada = `${ip}/${cidr}`;
 
-    // ENVIA A REQUISIÇÃO PARA A API
     const response = await fetch(
-  `${API_URL}/api/subnet?ip=${encodeURIComponent(entrada)}`
-);
+      `${API_URL}/api/subnet?ip=${encodeURIComponent(entrada)}`
+    );
+
     const data = await response.json();
 
-    // TRATA ERROS RETORNADOS PELA API
     if (!response.ok) {
       throw new Error(
         data.erro || data.message || data.error || 'Erro ao calcular sub-rede'
       );
     }
 
-    // ATUALIZA OS RESULTADOS NA INTERFACE
     render(data, ip, cidr);
+    saveHistory(ip, cidr);
 
   } catch (e) {
-
-    // EXIBE A MENSAGEM DE ERRO AO USUÁRIO
     current = null;
+
     $('result').classList.add('hidden');
     $('empty').classList.remove('hidden');
+
     showError(e.message);
 
   } finally {
-
-    // REATIVA O BOTÃO APÓS A CONCLUSÃO DA REQUISIÇÃO
     setTimeout(() => {
       btn.disabled = false;
       btnText.textContent = 'Calcular Sub-rede';
@@ -177,18 +175,24 @@ async function calc() {
 function reset() {
   current = null;
   clearError();
+  clearInputErrors();
 
-  $('result').classList.add('hidden');
-  $('empty').classList.remove('hidden');
-
-  $('ip').value = '';
-  $('cidr').value = '';
-
-  // VOLTA PARA O TOPO DA PÁGINA
+  // VOLTA PARA O TOPO DA PÁGINA PRIMEIRO
   window.scrollTo({
     top: 0,
     behavior: 'smooth'
   });
+
+  // DEPOIS LIMPA A INTERFACE
+  setTimeout(() => {
+    $('result').classList.add('hidden');
+    $('empty').classList.remove('hidden');
+
+    $('sobre').classList.remove('hidden-mobile');
+
+    $('ip').value = '';
+    $('cidr').value = '';
+  }, 350);
 }
 
 
@@ -233,6 +237,101 @@ function reset() {
   }
 
 // ======================================================
+// HISTÓRICO DE CONSULTAS
+// ======================================================
+
+function openHistoryModal() {
+  $('historyModal').classList.remove('hidden');
+  renderHistory();
+}
+
+function closeHistoryModal() {
+  $('historyModal').classList.add('hidden');
+}
+
+function saveHistory(ip, cidr) {
+
+  const consulta = `${ip}/${cidr}`;
+
+  let historico =
+      JSON.parse(localStorage.getItem('historicoIPv4')) || [];
+
+  // Evita duplicidade consecutiva
+  if (historico[0] !== consulta) {
+    historico.unshift(consulta);
+  }
+
+  // Mantém somente os últimos 10 registros
+  historico = historico.slice(0, 10);
+
+  localStorage.setItem(
+      'historicoIPv4',
+      JSON.stringify(historico)
+  );
+}
+
+function renderHistory() {
+
+  const lista = $('historyList');
+
+  const historico =
+      JSON.parse(localStorage.getItem('historicoIPv4')) || [];
+
+  lista.innerHTML = '';
+
+  if (historico.length === 0) {
+
+    const li = document.createElement('li');
+    li.textContent = 'Nenhuma consulta realizada.';
+    li.classList.add('history-empty');
+
+    lista.appendChild(li);
+
+    return;
+  }
+
+  historico.forEach(item => {
+
+    const li = document.createElement('li');
+
+    li.textContent = item;
+
+    li.addEventListener('click', () => {
+
+      const [ip, cidr] = item.split('/');
+
+      $('ip').value = ip;
+      $('cidr').value = cidr;
+
+      closeHistoryModal();
+
+      calc();
+    });
+
+    lista.appendChild(li);
+  });
+}
+
+function clearHistory() {
+
+  localStorage.removeItem('historicoIPv4');
+
+  renderHistory();
+}
+
+function markInputError(...ids) {
+  ids.forEach(id => {
+    $(id).classList.add('input-error');
+  });
+}
+
+function clearInputErrors() {
+  $('ip').classList.remove('input-error');
+  $('cidr').classList.remove('input-error');
+}
+
+
+// ======================================================
 // REGISTRA TODOS OS EVENTOS DA PÁGINA APÓS O CARREGAMENTO
 // ======================================================
 
@@ -245,20 +344,33 @@ document.addEventListener('DOMContentLoaded', () => {
   $('copyBtn').addEventListener('click', copyAll);
   $('csvBtn').addEventListener('click', exportCsv);
 
+  // HISTÓRICO
+  $('historyBtn').addEventListener('click', openHistoryModal);
+  $('closeHistoryBtn').addEventListener('click', closeHistoryModal);
+  $('clearHistoryBtn').addEventListener('click', clearHistory);
+
+  $('historyModal').addEventListener('click', (e) => {
+    if (e.target.id === 'historyModal') {
+      closeHistoryModal();
+    }
+  });
+
   // BLOQUEIA LETRAS E LIMITA O CAMPO IP A 15 CARACTERES
   $('ip').addEventListener('input', () => {
+    clearInputErrors();
+
     let value = $('ip').value.replace(/[^0-9.]/g, '');
     $('ip').value = value.slice(0, 15);
   });
 
   // BLOQUEIA LETRAS, LIMITA A 2 CARACTERES E IMPEDE CIDR MAIOR QUE 32
   $('cidr').addEventListener('input', () => {
+    clearInputErrors();
+
     let value = $('cidr').value.replace(/[^0-9]/g, '');
 
-    // Limita para 2 caracteres
     value = value.slice(0, 2);
 
-    // Impede valores maiores que 32
     if (value !== '' && parseInt(value) > 32) {
       value = '32';
     }
@@ -268,8 +380,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   ['ip', 'cidr'].forEach((id) => {
     $(id).addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') calc();
+      if (e.key === 'Enter') {
+        calc();
+      }
     });
   });
+
+  renderHistory();
 });
 })();

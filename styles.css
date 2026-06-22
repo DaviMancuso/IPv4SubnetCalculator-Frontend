@@ -327,3 +327,241 @@ body {
   cursor: not-allowed;
   transform: none;
 }
+
+
+/* ======================================================
+   ÁREA DOS BOTÕES
+====================================================== */
+
+.actions-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.actions-form .btn-primary {
+  flex: 1;
+}
+
+/* ======================================================
+   MODAL HISTÓRICO
+====================================================== */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-elevated);
+  padding: 20px;
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.modal-head h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+#historyList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+#historyList li {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(241,243,248,.7);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+#historyList li:hover {
+  border-color: var(--ring);
+  background: var(--primary-soft);
+}
+
+.history-empty {
+  color: var(--muted);
+  cursor: default !important;
+}
+
+/* ======================================================
+   BOTÃO HISTÓRICO
+====================================================== */
+
+#historyBtn {
+  min-width: 180px;
+  min-height: 35px;
+
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  background: transparent;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 0 20px;
+
+  transition: all .2s ease;
+}
+
+#historyBtn:hover {
+  background: var(--primary-soft);
+  transform: translateY(-1px);
+}
+
+#historyBtn .ic {
+  width: 18px;
+  height: 18px;
+}
+
+/* ======================================================
+   BOTÃO FECHAR MODAL
+====================================================== */
+
+#closeHistoryBtn.btn-ghost {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  max-width: 44px;
+
+  padding: 0;
+  flex: 0 0 44px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  line-height: 1;
+  border-radius: 12px;
+}
+
+/* ======================================================
+   RESPONSIVIDADE
+====================================================== */
+
+@media (max-width: 640px) {
+
+  .actions-form {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .actions-form .btn-primary {
+    flex: 1;
+  }
+
+  #historyBtn {
+    min-width: 130px;
+    min-height: 32px;
+    padding: 0 14px;
+  }
+
+ #closeHistoryBtn.btn-ghost {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    max-width: 34px;
+
+    flex: 0 0 34px;
+
+    font-size: 15px;
+    border-radius: 8px;
+  }
+}
+
+.input-error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
+
+/* ANIMAÇÃO */ 
+
+.result-wrap {
+  animation: fadeUp .25s ease;
+}
+
+.modal-content {
+  animation: fadeUp .2s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-card {
+  animation: fadeUp .25s ease;
+}
+
+.modal-content {
+  animation: modalFadeIn .25s ease;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-content {
+  animation: modalEnter .38s ease;
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
